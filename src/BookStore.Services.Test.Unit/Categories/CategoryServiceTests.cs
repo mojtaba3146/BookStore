@@ -99,8 +99,9 @@ namespace BookStore.Services.Test.Unit.Categories
         public void IF_Selected_Id_Does_Not_Exist_For_Delete_Exception()
         {
             CreateCategoriesInDataBase();
+            int categoryId = 500;
 
-            Action expected = () => _sut.Delete(5);
+            Action expected = () => _sut.Delete(categoryId);
 
             expected.Should().Throw<GroupNotExsistException>();
         }

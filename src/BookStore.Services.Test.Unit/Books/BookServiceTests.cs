@@ -6,6 +6,7 @@ using BookStore.Persistence.EF.Books;
 using BookStore.Persistence.EF.Categories;
 using BookStore.Services.Books;
 using BookStore.Services.Books.Contracts;
+using BookStore.Services.Books.Exceptions;
 using BookStore.Services.Categories;
 using BookStore.Services.Categories.Contracts;
 using BookStore.Test.Tools;
@@ -53,18 +54,6 @@ namespace BookStore.Services.Test.Unit.Books
             expected.Description.Should().Be(dto.Description);
             expected.Author.Should().Be(dto.Author);
             expected.CategoryId.Should().Be(category.Id);
-        }
-
-        private static AddBookDto CreateAddBookDto(Entities.Category category)
-        {
-            return new AddBookDto
-            {
-                Title = "history",
-                Pages = 400,
-                Description = "this is abook",
-                Author = "mojtaba",
-                CategoryId = category.Id
-            };
         }
 
         [Fact]
@@ -115,6 +104,47 @@ namespace BookStore.Services.Test.Unit.Books
                 .NotContain(_ => _.Title == "mm");
         }
 
+        [Fact]
+        public void IF_Given_Id_Does_Not_Exist_BookNotExsistException()
+        {
+            var categoryfactory = new CategoryFactory();
+            var category = categoryfactory.CreateCategory();
+            _dataContext.Manipulate(_ => _.Add(category));
+            AddBookDto dto = CreateAddBookDto(category);
+            _sut.Add(dto);
+            UpdateBookDto updateDto = CreateUpdateDto();
+            int BookId = 500;
+
+            Action expected = () => _sut.Update(BookId, updateDto);
+
+            expected.Should().Throw<BookNotExsistException>();
+        }
+
+        [Fact]
+        public void IF_Selected_Id_Does_Not_Exist_BookNotExsistException()
+        {
+            var categoryfactory = new CategoryFactory();
+            var category = categoryfactory.CreateCategory();
+            _dataContext.Manipulate(_ => _.Add(category));
+            AddBookDto dto = CreateAddBookDto(category);
+            _sut.Add(dto);
+            int BookId = 500;
+
+            Action expected = () => _sut.Delete(BookId);
+
+            expected.Should().Throw<BookNotExsistException>();
+        }
+        private static AddBookDto CreateAddBookDto(Entities.Category category)
+        {
+            return new AddBookDto
+            {
+                Title = "history",
+                Pages = 400,
+                Description = "this is abook",
+                Author = "mojtaba",
+                CategoryId = category.Id
+            };
+        }
         private static UpdateBookDto CreateUpdateDto()
         {
             return new UpdateBookDto
