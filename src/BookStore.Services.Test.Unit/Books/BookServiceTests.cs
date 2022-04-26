@@ -77,8 +77,10 @@ namespace BookStore.Services.Test.Unit.Books
             var categoryfactory = new CategoryFactory();
             var category = categoryfactory.CreateCategory();
             _dataContext.Manipulate(_ => _.Add(category));
-            AddBookDto dto = CreateAddBookDto(category);
-            _sut.Add(dto);
+            Book bk = CreateBookWithCategory(category);
+            _dataContext.Manipulate(_ => _.Books.Add(bk));
+
+
             var book = _dataContext.Books.FirstOrDefault();
             UpdateBookDto updateDto = CreateUpdateDto();
 
@@ -94,8 +96,9 @@ namespace BookStore.Services.Test.Unit.Books
             var categoryfactory = new CategoryFactory();
             var category = categoryfactory.CreateCategory();
             _dataContext.Manipulate(_ => _.Add(category));
-            AddBookDto dto = CreateAddBookDto(category);
-            _sut.Add(dto);
+            Book bk = CreateBookWithCategory(category);
+            _dataContext.Manipulate(_ => _.Books.Add(bk));
+
             var book = _dataContext.Books.FirstOrDefault();
 
             _sut.Delete(book.Id);
@@ -156,20 +159,10 @@ namespace BookStore.Services.Test.Unit.Books
                 CategoryId = 1
             };
         }
+        private static Book CreateBookWithCategory(Category category)
+        {
+            return new Book { Author = "aa", Title = "tt", Pages = 20, Description = "dddd", CategoryId = category.Id };
+        }
 
-        //private void CreateBooksInDataBase()
-        //{
-        //    var books = new List<Book>
-        //    {
-        //        new Book { 
-        //            Title = "history",Author="mojtaba",Pages=200,CategoryId=1,Description="aa"
-        //        },
-        //        new Book {
-        //            Title = "math",Author="hamed",Pages=100,CategoryId=1,Description="bb"
-        //        }
-        //    };
-        //    _dataContext.Manipulate(_ =>
-        //    _.Books.AddRange(books));
-        //}
     }
 }
