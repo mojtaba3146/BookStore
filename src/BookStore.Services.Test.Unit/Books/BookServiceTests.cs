@@ -113,8 +113,8 @@ namespace BookStore.Services.Test.Unit.Books
             var categoryfactory = new CategoryFactory();
             var category = categoryfactory.CreateCategory();
             _dataContext.Manipulate(_ => _.Add(category));
-            AddBookDto dto = CreateAddBookDto(category);
-            _sut.Add(dto);
+            Book bk = CreateBookWithCategory(category);
+            _dataContext.Manipulate(_ => _.Books.Add(bk));
             UpdateBookDto updateDto = CreateUpdateDto();
             int BookId = 500;
 
@@ -129,8 +129,8 @@ namespace BookStore.Services.Test.Unit.Books
             var categoryfactory = new CategoryFactory();
             var category = categoryfactory.CreateCategory();
             _dataContext.Manipulate(_ => _.Add(category));
-            AddBookDto dto = CreateAddBookDto(category);
-            _sut.Add(dto);
+            Book bk = CreateBookWithCategory(category);
+            _dataContext.Manipulate(_ => _.Books.Add(bk));
             int BookId = 500;
 
             Action expected = () => _sut.Delete(BookId);
